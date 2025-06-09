@@ -18,6 +18,12 @@ BATCH_SIZE = 25
 MODEL_NAME = "meta-llama/Llama-3.3-8B-Instruct"
 NUM_SHARDS = 4
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+
+load_dotenv()
+HF_TOKEN = os.environ.get("HF_TOKEN")
+
 
 class DescriptorScore(BaseModel):
     descriptor: str = Field(description="The descriptor being evaluated")
@@ -35,13 +41,16 @@ class LocalLlama(dspy.LM):
         # Create cache directory if it doesn't exist
         os.makedirs(cache_dir, exist_ok=True)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name, cache_dir=cache_dir, token=HF_TOKEN
+        )
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.float16,
             device_map=device_map,
             trust_remote_code=True,
             cache_dir=cache_dir,
+            token=HF_TOKEN,
         )
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
