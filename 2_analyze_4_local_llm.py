@@ -6,16 +6,6 @@ os.environ["HF_HOME"] = "./models"  # Set Hugging Face cache directory
 import sys
 from typing import List
 
-# Set cache directories before importing dspy
-os.environ["DSPY_CACHE_DIR"] = "./dspy_cache"
-os.environ["DISKCACHE_DIRECTORY"] = "./dspy_cache"
-os.environ["TMPDIR"] = "./tmp"
-os.environ["DSPY_CACHE_DISABLE"] = "1"  # Disable caching if still problematic
-
-# Create directories
-os.makedirs("./dspy_cache", exist_ok=True)
-os.makedirs("./tmp", exist_ok=True)
-
 import dspy
 import torch
 from pydantic import BaseModel, Field
