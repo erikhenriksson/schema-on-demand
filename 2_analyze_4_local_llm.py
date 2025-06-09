@@ -15,7 +15,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 SOURCE_FILE = "data/processed/descriptors_with_explainers.jsonl"
 OUTPUT_DIR = "results/shards"
 BATCH_SIZE = 25
-MODEL_NAME = "meta-llama/Llama-3.3-8B-Instruct"
+MODEL_NAME = "meta-llama/Meta-Llama-3-8B"
 NUM_SHARDS = 4
 
 # Load environment variables from .env file
