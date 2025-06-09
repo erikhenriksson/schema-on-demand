@@ -26,15 +26,20 @@ class DescriptorScore(BaseModel):
 
 
 class LocalLlama(dspy.LM):
-    def __init__(self, model_name, device_map="auto"):
+    def __init__(self, model_name, device_map="auto", cache_dir="./models"):
         super().__init__(model_name)
-        print(f"Loading model {model_name}...")
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        print(f"Loading model {model_name} to cache dir: {cache_dir}")
+
+        # Create cache directory if it doesn't exist
+        os.makedirs(cache_dir, exist_ok=True)
+
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.float16,
             device_map=device_map,
             trust_remote_code=True,
+            cache_dir=cache_dir,
         )
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
@@ -172,7 +177,7 @@ def main():
 
     # Setup model
     print("Loading local Llama model...")
-    local_lm = LocalLlama(MODEL_NAME)
+    local_lm = LocalLlama(MODEL_NAME, cache_dir="./models")
     dspy.settings.configure(lm=local_lm)
 
     # Get descriptors for this shard
