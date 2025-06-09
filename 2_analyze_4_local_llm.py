@@ -34,37 +34,38 @@ class DescriptorScore(BaseModel):
 
 
 class LocalLlama(dspy.LM):
-    def __init__(self, model_name, device_map="auto", cache_dir="./models"):
+    def __init__(self, model_name, device_map="auto"):
         super().__init__(model_name)
-        print(f"Loading model {model_name} to cache dir: {cache_dir}")
+        print(f"Loading model {model_name}...")
+        print(f"Using HF cache: {os.environ.get('HF_HOME', 'default')}")
 
-        # Create cache directory if it doesn't exist
-        os.makedirs(cache_dir, exist_ok=True)
+        if not HF_TOKEN:
+            print("Warning: HF_TOKEN not found in environment")
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name, cache_dir=cache_dir, token=HF_TOKEN
-        )
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, token=HF_TOKEN)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.float16,
             device_map=device_map,
             trust_remote_code=True,
-            cache_dir=cache_dir,
             token=HF_TOKEN,
         )
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         print(f"Model loaded on devices: {self.model.hf_device_map}")
 
-    def __call__(self, prompt, **kwargs):
-        inputs = self.tokenizer(prompt, return_tensors="pt", padding=True)
+    def generate(self, prompt, **kwargs):
+        """DSPy calls this method"""
+        inputs = self.tokenizer(
+            prompt, return_tensors="pt", padding=True, truncation=True, max_length=4096
+        )
         inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
 
         with torch.no_grad():
             outputs = self.model.generate(
                 **inputs,
                 max_new_tokens=2048,
-                temperature=0.7,
+                temperature=0.1,
                 do_sample=True,
                 pad_token_id=self.tokenizer.eos_token_id,
             )
@@ -72,7 +73,11 @@ class LocalLlama(dspy.LM):
         response = self.tokenizer.decode(
             outputs[0][inputs["input_ids"].shape[1] :], skip_special_tokens=True
         )
-        return [response]
+        return response
+
+    def __call__(self, prompt, **kwargs):
+        """Fallback method"""
+        return self.generate(prompt, **kwargs)
 
 
 class BatchScoring(dspy.Signature):
