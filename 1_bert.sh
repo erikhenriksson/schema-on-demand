@@ -2,7 +2,7 @@
 #SBATCH --job-name=bert_train
 #SBATCH --account=project_2011109
 #SBATCH --partition=gpusmall
-#SBATCH --time=3:00:00
+#SBATCH --time=6:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
