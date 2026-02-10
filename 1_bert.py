@@ -313,11 +313,12 @@ for benchmark_name in BENCHMARKS:
     # Predict on test set (80k)
     print(f"\nPredicting labels on 80k test set...")
 
+    # Get device
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
     # Prepare test data for prediction
     test_texts = [ex["document"] for ex in test_data]
-    test_encodings = tokenizer(
-        test_texts, truncation=True, padding=True, max_length=512, return_tensors="pt"
-    )
 
     # Batch prediction
     batch_size = 32
@@ -326,10 +327,18 @@ for benchmark_name in BENCHMARKS:
     model.eval()
     with torch.no_grad():
         for i in range(0, len(test_texts), batch_size):
-            batch_encodings = {
-                "input_ids": test_encodings["input_ids"][i : i + batch_size],
-                "attention_mask": test_encodings["attention_mask"][i : i + batch_size],
-            }
+            batch_texts = test_texts[i : i + batch_size]
+            batch_encodings = tokenizer(
+                batch_texts,
+                truncation=True,
+                padding=True,
+                max_length=512,
+                return_tensors="pt",
+            )
+
+            # Move to device
+            batch_encodings = {k: v.to(device) for k, v in batch_encodings.items()}
+
             outputs = model(**batch_encodings)
             predictions = outputs.logits.argmax(-1).cpu().numpy()
             all_predictions.extend(predictions)
