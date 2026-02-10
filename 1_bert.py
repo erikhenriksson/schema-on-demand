@@ -272,7 +272,7 @@ for benchmark_name in BENCHMARKS:
         eval_dataset=dev_dataset,
         tokenizer=tokenizer,
         compute_metrics=compute_metrics,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=5)],
     )
 
     # Train
