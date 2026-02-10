@@ -86,7 +86,11 @@ def load_benchmark_data(benchmark_name):
         / "concatenated"
         / f"descriptors_{benchmark_name}_harmonized_labelled.jsonl"
     )
-    return load_jsonl(filepath)
+    data = load_jsonl(filepath)
+    # Convert all labels to strings for consistency
+    for ex in data:
+        ex["label"] = str(ex["label"])
+    return data
 
 
 def sample_negatives(negative_pool, n_samples):
@@ -96,7 +100,6 @@ def sample_negatives(negative_pool, n_samples):
 
 def cap_examples_per_class(examples, max_per_class):
     """Cap number of examples per class label."""
-    label_counts = Counter([ex["label"] for ex in examples])
     capped = []
     label_tracker = Counter()
 
