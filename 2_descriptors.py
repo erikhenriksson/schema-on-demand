@@ -25,7 +25,7 @@ RANDOM_SEED = 42
 C_VALUE = 1.0  # L2 regularization parameter
 
 # Benchmarks to train on
-BENCHMARKS = ["yelp", "bbc_news", "imdb"]
+BENCHMARKS = ["imdb"]
 
 # File paths
 NEGATIVE_POOL_FILE = (
