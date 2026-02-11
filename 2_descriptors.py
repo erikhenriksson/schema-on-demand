@@ -335,7 +335,7 @@ for benchmark_name in BENCHMARKS:
     # Add predictions to test data
     pred_key = f"{benchmark_name}_label_descriptor"
     for i, pred_id in enumerate(y_pred_80k):
-        test_data[i][pred_key] = id2label[pred_id]
+        test_data[i][pred_key] = id2label[str(pred_id)]
 
     print(f"Added predictions under key: '{pred_key}'")
 
