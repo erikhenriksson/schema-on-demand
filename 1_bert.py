@@ -32,7 +32,7 @@ MAX_EXAMPLES_PER_CLASS = 5000
 RANDOM_SEED = 42
 
 # Benchmarks to train on
-BENCHMARKS = ["imdb"]
+BENCHMARKS = ["yelp"]
 
 # File paths
 NEGATIVE_POOL_FILE = (
