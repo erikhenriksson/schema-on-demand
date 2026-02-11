@@ -235,7 +235,9 @@ for benchmark_name in BENCHMARKS:
         # Get all unique labels
         all_labels = sorted(list(set([ex["label"] for ex in all_examples])))
         label2id = {label: idx for idx, label in enumerate(all_labels)}
-        id2label = {idx: label for label, idx in label2id.items()}
+        id2label = {
+            str(idx): label for label, idx in label2id.items()
+        }  # Convert to string keys
         num_labels = len(all_labels)
 
         print(f"\nLabels for this classifier: {all_labels}")
