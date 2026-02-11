@@ -26,7 +26,7 @@ from transformers import (
 # ============================================================================
 
 BASE_DIR = Path("/scratch/project_2011109/descriptors/data")
-MODEL_NAME = "chandar-lab/NeoBERT"
+MODEL_NAME = "answerdotai/ModernBERT-large"
 MAX_EXAMPLES_PER_CLASS = 5000
 RANDOM_SEED = 42
 
