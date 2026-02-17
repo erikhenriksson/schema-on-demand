@@ -31,14 +31,14 @@ TEST_FILE = (
 # Single output file — all classifiers write predictions here
 OUTPUT_FILE = (
     BASE_DIR
-    / "fineweb-edu-80/concatenated/descriptors_fineweb-edu_harmonized_labelled_predicted.jsonl"
+    / "fineweb-edu-80/concatenated/descriptors_fineweb-edu_harmonized_labelled_benchmarked.jsonl"
 )
 
 # Model and metric directories (per classifier type)
 MODELS_DIR_BERT = BASE_DIR / "trained_models" / "bert"
 MODELS_DIR_LOGREG = BASE_DIR / "trained_models" / "logreg_descriptor"
 MODELS_DIR_TFIDF = BASE_DIR / "trained_models" / "logreg_tfidf"
-METRICS_DIR = BASE_DIR / "metrics"
+METRICS_DIR = BASE_DIR / "trained_models" / "metrics"
 
 # ============================================================================
 # CONSTANTS
