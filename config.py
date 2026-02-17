@@ -52,7 +52,7 @@ TRAIN_RATIO = 0.7
 DEV_RATIO = 0.15
 
 # Benchmarks to train on
-BENCHMARKS = ["yelp", "imdb"]
+BENCHMARKS = ["ag_news", "bbc_news", "nemotron-cc-mix"]
 
 # ============================================================================
 # SEEDING
