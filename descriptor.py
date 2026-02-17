@@ -5,6 +5,10 @@ Predict labels + probabilities on the fineweb-edu-80 test set.
 Writes to the shared output file.
 """
 
+import os
+
+os.environ["WANDB_DISABLED"] = "true"
+
 import json
 import pickle
 

@@ -4,6 +4,9 @@ Train a BERT (NeoBERT) classifier on benchmarks and predict labels + probabiliti
 on the fineweb-edu-80 test set. Writes to the shared output file.
 """
 
+import os
+
+os.environ["WANDB_DISABLED"] = "true"
 import json
 
 import numpy as np
