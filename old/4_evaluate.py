@@ -21,7 +21,7 @@ BASE_DIR = Path("/scratch/project_2011109/descriptors/data")
 RANDOM_SEED = 42
 
 # Benchmarks to evaluate
-BENCHMARKS = ["imdb"]
+BENCHMARKS = ["yelp"]
 
 # File paths
 TEST_FILE = (
