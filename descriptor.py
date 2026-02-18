@@ -8,7 +8,6 @@ Writes to the shared output file.
 import os
 
 os.environ["WANDB_DISABLED"] = "true"
-
 import json
 import pickle
 
