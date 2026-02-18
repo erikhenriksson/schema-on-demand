@@ -5,9 +5,6 @@ Predict labels + probabilities on the fineweb-edu-80 test set.
 Writes to the shared output file.
 """
 
-import os
-
-os.environ["WANDB_DISABLED"] = "true"
 import json
 import pickle
 
@@ -20,6 +17,7 @@ from config import (
     BENCHMARKS,
     LOGREG_C,
     METRICS_DIR,
+    MIN_DESCRIPTOR_DF,
     MODELS_DIR_LOGREG,
     NEGATIVE_POOL_FILE,
     RANDOM_SEED,
@@ -42,12 +40,19 @@ METRICS_DIR.mkdir(parents=True, exist_ok=True)
 # ============================================================================
 
 
-def build_descriptor_vocabulary(examples):
-    """Build vocabulary of all unique descriptors in training data."""
-    vocab = set()
+def build_descriptor_vocabulary(examples, min_df=2):
+    """Build vocabulary of descriptors that appear in at least min_df examples."""
+    from collections import Counter
+
+    doc_freq = Counter()
     for ex in examples:
-        vocab.update(ex["harmonized_descriptors"])
-    return sorted(list(vocab))
+        # Count each descriptor once per document (document frequency, not term frequency)
+        doc_freq.update(set(ex["harmonized_descriptors"]))
+
+    vocab = sorted([desc for desc, count in doc_freq.items() if count >= min_df])
+    n_dropped = len(doc_freq) - len(vocab)
+    print(f"  Dropped {n_dropped} descriptors with df < {min_df}")
+    return vocab
 
 
 def descriptors_to_multihot(examples, vocab):
@@ -124,7 +129,7 @@ for benchmark_name in BENCHMARKS:
 
         # Build vocabulary from training data only
         print("\nBuilding descriptor vocabulary from training data...")
-        vocab = build_descriptor_vocabulary(splits["train"])
+        vocab = build_descriptor_vocabulary(splits["train"], min_df=MIN_DESCRIPTOR_DF)
         print(f"Vocabulary size: {len(vocab)}")
 
         # Encode
